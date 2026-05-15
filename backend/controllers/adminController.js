@@ -1,5 +1,5 @@
-import Student from "../models/Student.js";
-import Job from "../models/Job.js";
+import Student from "../models/student.js";
+import Job from "../models/job.js";
 import Application from "../models/application.js"; // make sure case matches
 
 /* ===========================

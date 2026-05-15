@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 
-import Job from "./models/Job.js";
-import User from "./models/User.js";
+import Job from "./models/job.js";
+import User from "./models/user.js";
 
 dotenv.config();
 

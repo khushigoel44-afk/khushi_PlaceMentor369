@@ -20,7 +20,7 @@ const app = express();
 // ✅ CORS (allow frontend URLs)
 app.use(
   cors({
-    origin: ["http://127.0.0.1:5500", "http://localhost:5500"], // dev URLs
+    origin: true, // dynamically allow any frontend port
     credentials: true
   })
 );

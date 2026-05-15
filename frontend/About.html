@@ -94,10 +94,41 @@
 
 
     /* FOOTER */
-    footer { background: #0f172a; color: #cbd5f5; padding: 50px 0; }
-    .footer-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 40px; }
-    footer a { display: block; color: #94a3b8; text-decoration: none; margin-top: 8px; }
-    .copyright { text-align: center; margin-top: 40px; font-size: 14px; color: #94a3b8; }
+    footer { background: #0f172a; color: #f8fafc; padding: 80px 0 40px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+    footer h3 { font-size: 24px; margin-bottom: 20px; color: #fff; }
+    footer h4 { font-size: 18px; margin-bottom: 20px; color: #fff; }
+    footer p { color: #94a3b8; line-height: 1.6; }
+    footer a { color: #94a3b8; text-decoration: none; margin-bottom: 12px; display: block; transition: color 0.2s; }
+    footer a:hover { color: #4f46e5; }
+    .footer-social { display: flex; gap: 15px; margin-top: 20px; }
+    .footer-social a { font-size: 20px; color: #94a3b8; }
+    .footer-social a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid #1e293b; padding-top: 40px; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 14px; }
+    .copyright { margin-top: 0; }
+
+    /* DOCUMENTATION PORTAL */
+    .portal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .portal-content { background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 800px; max-height: 90vh; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); animation: slideUp 0.4s ease-out; }
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .portal-header { padding: 24px 32px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+    .portal-nav { display: flex; gap: 12px; padding: 12px 32px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+    .portal-nav-btn { background: none; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; color: #64748b; transition: all 0.2s; }
+    .portal-nav-btn.active { background: #4f46e5; color: #fff; }
+    .portal-body { padding: 32px; overflow-y: auto; color: #334155; line-height: 1.7; }
+    .portal-body h2 { margin-bottom: 16px; color: #0f172a; font-size: 24px; }
+    .portal-body section { margin-bottom: 32px; }
+    .portal-body section h3 { font-size: 18px; margin-bottom: 12px; color: #1e293b; }
+    .close-portal { cursor: pointer; font-size: 24px; color: #64748b; transition: color 0.2s; }
+    .close-portal:hover { color: #ef4444; }
+
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
 
     /* MODAL */
     .modal { position: fixed; inset: 0; display: none; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
@@ -249,14 +280,63 @@ footer h4 {
 
 <!-- FOOTER -->
 <footer>
-  <div class="container footer-grid">
-    <div><h3>PlacementorAI</h3><p>AI-powered placement readiness platform.</p></div>
-    <div><h4>Product</h4><a href="#">Features</a><a href="#">Career Paths</a><a href="#">Pricing</a></div>
-    <div><h4>Company</h4><a href="login.html">Login</a><a href="contact.html" >Contact</a><a href="About.html">About</a></div>
-    <div><h4>Social</h4><a href="https://www.linkedin.com/" target="_blank">LinkedIn</a><a href="https://x.com/?lang=en" target="_blank">Twitter</a><a href="https://github.com/" target="_blank">GitHub</a></div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h3>PlacementorAI</h3>
+        <p>Your intelligent companion for career growth and recruitment management. Streamlining the path from campus to corporate.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="#"><i class="fa-brands fa-github"></i></a>
+          <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="index.html">Home</a>
+        <a href="About.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="javascript:void(0)" onclick="openPortal('faq')">FAQ</a>
+        <a href="javascript:void(0)" onclick="openPortal('privacy')">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="openPortal('terms')">Terms of Service</a>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <a href="login.html">Login</a>
+        <a href="register.html">Sign Up</a>
+        <a href="register.html">Recruiter Portal</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">&copy; 2026 PlacementorAI. All rights reserved.</p>
+      <div style="display: flex; gap: 20px;">
+        <a href="javascript:void(0)" onclick="openPortal('privacy')">Privacy</a>
+        <a href="javascript:void(0)" onclick="openPortal('terms')">Terms</a>
+      </div>
+    </div>
   </div>
-  <p class="copyright">© 2026 PlacementorAI</p>
 </footer>
+
+<!-- DOCUMENTATION PORTAL -->
+<div id="portal-overlay" class="portal-overlay">
+  <div class="portal-content">
+    <div class="portal-header">
+      <h2 id="portal-title">Documentation Portal</h2>
+      <i class="fa-solid fa-xmark close-portal" onclick="closePortal()"></i>
+    </div>
+    <div class="portal-nav">
+      <button class="portal-nav-btn" id="btn-faq" onclick="switchPortalTab('faq')">FAQ</button>
+      <button class="portal-nav-btn" id="btn-privacy" onclick="switchPortalTab('privacy')">Privacy</button>
+      <button class="portal-nav-btn" id="btn-terms" onclick="switchPortalTab('terms')">Terms</button>
+    </div>
+    <div class="portal-body" id="portal-body">
+      <!-- Content will be injected here -->
+    </div>
+  </div>
+</div>
 
 <!-- LOGIN MODAL -->
 <div id="modal" class="modal">
@@ -291,6 +371,78 @@ footer h4 {
     alert("Login successful (demo)");
     closeModal();
   }
+
+  // DOCUMENTATION PORTAL JS
+  const portalOverlay = document.getElementById('portal-overlay');
+  const portalBody = document.getElementById('portal-body');
+  const portalTitle = document.getElementById('portal-title');
+
+  const portalContent = {
+    faq: `
+      <h2>Frequently Asked Questions</h2>
+      <section>
+        <h3>How do I apply for a job?</h3>
+        <p>Students can browse the 'Job Listings' section, build their profile, and click 'Apply' on any open position.</p>
+      </section>
+      <section>
+        <h3>How do recruiters post jobs?</h3>
+        <p>Recruiters can sign up for a Recruiter account and access their dedicated dashboard to post and manage job listings.</p>
+      </section>
+      <section>
+        <h3>Is my data secure?</h3>
+        <p>Yes, we use industry-standard encryption and follow best practices to ensure your personal and academic data remains private.</p>
+      </section>
+    `,
+    privacy: `
+      <h2>Privacy Policy</h2>
+      <section>
+        <h3>Data Collection</h3>
+        <p>We collect information necessary to facilitate the recruitment process, including names, emails, and academic records.</p>
+      </section>
+      <section>
+        <h3>Data Usage</h3>
+        <p>Your data is only shared with recruiters of companies you explicitly apply to. We do not sell your data to third parties.</p>
+      </section>
+    `,
+    terms: `
+      <h2>Terms of Service</h2>
+      <section>
+        <h3>User Agreement</h3>
+        <p>By using PlacementorAI, you agree to provide accurate information and follow our community guidelines.</p>
+      </section>
+      <section>
+        <h3>Platform Usage</h3>
+        <p>PlacementorAI is a facilitator. We do not guarantee employment but provide the tools to improve your placement chances.</p>
+      </section>
+    `
+  };
+
+  function openPortal(tab) {
+    portalOverlay.style.display = 'flex';
+    switchPortalTab(tab);
+  }
+
+  function closePortal() {
+    portalOverlay.style.display = 'none';
+  }
+
+  function switchPortalTab(tab) {
+    // Update content
+    portalBody.innerHTML = portalContent[tab];
+    
+    // Update active button
+    document.querySelectorAll('.portal-nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('btn-' + tab).classList.add('active');
+    
+    // Update title
+    const titles = { faq: 'FAQ', privacy: 'Privacy Policy', terms: 'Terms of Service' };
+    portalTitle.innerText = titles[tab];
+  }
+
+  // Close on overlay click
+  portalOverlay.addEventListener('click', (e) => {
+    if (e.target === portalOverlay) closePortal();
+  });
 </script>
 <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2026/01/29/16/20260129163015-0ZV4O3BK.js" defer></script>

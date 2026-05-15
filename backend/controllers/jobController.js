@@ -1,4 +1,4 @@
-import Job from "../models/Job.js";
+import Job from "../models/job.js";
 import Application from "../models/application.js";
 
 /* CREATE JOB */

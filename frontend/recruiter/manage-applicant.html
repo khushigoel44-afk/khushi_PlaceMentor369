@@ -34,9 +34,15 @@
     </aside>
 
     <main class="flex-1 p-8">
-      <header class="mb-8">
-        <h2 class="text-3xl font-bold text-slate-800">Review Applications</h2>
-        <p class="text-slate-500">Manage student applications and filter by eligibility</p>
+      <header class="mb-8 flex items-center justify-between">
+        <div>
+          <h2 class="text-3xl font-bold text-slate-800">Review Applications</h2>
+          <p class="text-slate-500">Manage student applications and filter by eligibility</p>
+        </div>
+        <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow flex items-center gap-2 transition-colors">
+          <i data-lucide="download"></i>
+          Export to CSV
+        </button>
       </header>
 
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
