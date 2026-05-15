@@ -1,4 +1,4 @@
-import Job from "../models/Job.js";
+import Job from "../models/job.js";
 import Application from "../models/application.js";
 import mongoose from "mongoose"; 
 
@@ -135,6 +135,70 @@ export const getRecruiterDashboardStats = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Dashboard stats failed" });
+  }
+};
+
+/* ======================================================
+   EXPORT APPLICANTS TO CSV
+====================================================== */
+export const exportJobApplicantsToCSV = async (req, res) => {
+  try {
+    const { jobId } = req.query;
+    let applications = [];
+    let filename = "all-applicants.csv";
+
+    if (jobId) {
+      // Verify the job belongs to this recruiter
+      const job = await Job.findOne({ _id: jobId, recruiter: req.user.id });
+      if (!job) return res.status(404).json({ message: "Job not found or unauthorized" });
+      
+      applications = await Application.find({ job: jobId })
+        .populate("student", "name email branch cgpa skills resume")
+        .populate("job", "title");
+        
+      filename = `applicants-${jobId}.csv`;
+    } else {
+      // Export all applications for all jobs owned by recruiter
+      const jobs = await Job.find({ recruiter: req.user.id }).select("_id");
+      const jobIds = jobs.map(j => j._id);
+      
+      applications = await Application.find({ job: { $in: jobIds } })
+        .populate("student", "name email branch cgpa skills resume")
+        .populate("job", "title");
+    }
+
+    // Define CSV Headers
+    const headers = ["Job Title", "Name", "Email", "Branch", "CGPA", "Skills", "Resume Link", "Status", "Applied At"];
+    
+    // Map application data to CSV rows
+    const rows = applications.map(app => {
+      const student = app.student || {};
+      const job = app.job || {};
+      const skills = student.skills ? student.skills.join("; ") : "N/A";
+      
+      return [
+        `"${job.title || "N/A"}"`,
+        `"${student.name || "N/A"}"`,
+        `"${student.email || "N/A"}"`,
+        `"${student.branch || "N/A"}"`,
+        student.cgpa || "N/A",
+        `"${skills}"`,
+        `"${student.resume || "N/A"}"`,
+        app.status,
+        app.createdAt ? new Date(app.createdAt).toLocaleDateString() : "N/A"
+      ].join(",");
+    });
+
+    const csvContent = [headers.join(","), ...rows].join("\n");
+
+    // Set headers for file download
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    
+    res.status(200).send(csvContent);
+  } catch (err) {
+    console.error("EXPORT CSV ERROR:", err);
+    res.status(500).json({ message: "Failed to export applicants" });
   }
 };
 

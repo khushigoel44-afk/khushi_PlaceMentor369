@@ -139,3 +139,62 @@ async function updateStatus(applicationId, status) {
     alert("❌ Failed to update status: " + err.message);
   }
 }
+
+/*********************************
+ * EXPORT TO CSV
+ *********************************/
+document.getElementById("export-csv-btn")?.addEventListener("click", async () => {
+  try {
+    const jobId = localStorage.getItem("filter_job_id");
+    let url = `${API}/applications/export`;
+    if (jobId) url += `?jobId=${jobId}`;
+
+    // Add visual feedback
+    const btn = document.getElementById("export-csv-btn");
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<i data-lucide="loader-2" class="animate-spin"></i> Exporting...`;
+    btn.disabled = true;
+
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.message || "Failed to export");
+    }
+
+    // Get filename from Content-Disposition header if possible
+    const contentDisposition = res.headers.get("Content-Disposition");
+    let filename = "applicants.csv";
+    if (contentDisposition && contentDisposition.includes("filename=")) {
+      filename = contentDisposition.split("filename=")[1].replace(/"/g, "");
+    }
+
+    // Convert response to Blob and trigger download
+    const blob = await res.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(downloadUrl);
+    document.body.removeChild(a);
+
+    // Restore button
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    lucide.createIcons(); // re-init icons
+
+  } catch (err) {
+    console.error("Export error:", err);
+    alert("❌ Failed to export CSV: " + err.message);
+    
+    // Restore button
+    const btn = document.getElementById("export-csv-btn");
+    btn.innerHTML = `<i data-lucide="download"></i> Export to CSV`;
+    btn.disabled = false;
+    lucide.createIcons();
+  }
+});
