@@ -212,7 +212,7 @@ async function loadProfile() {
         cgpaInput.value = profile.cgpa || "";
 
         Array.from(branchSelect.options).forEach(o => {
-            if (o.text === profile.branch) o.selected = true;
+            if (o.value === profile.branch || o.text === profile.branch) o.selected = true;
         });
 
         skills = (profile.skills || []).map(s => ({ name: s, level: "Intermediate" }));

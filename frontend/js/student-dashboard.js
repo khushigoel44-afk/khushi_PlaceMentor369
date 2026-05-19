@@ -18,7 +18,38 @@ document.addEventListener("DOMContentLoaded", () => {
 async function initDashboard() {
   showWelcome();
   await loadApplications();
+  await loadProfileCompletion();
   attachLogout();
+}
+
+async function loadProfileCompletion() {
+  try {
+    const res = await fetch(`${API_BASE}/student/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+    const profile = await res.json();
+
+    if (!profile) return;
+
+    const filled = [
+      profile.name,
+      profile.roll,
+      profile.branch,
+      profile.cgpa > 0,
+      profile.skills && profile.skills.length > 0,
+      profile.resume
+    ].filter(Boolean).length;
+
+    const percent = Math.floor((filled / 6) * 100);
+
+    const bar = document.getElementById("progress-bar");
+    const label = document.getElementById("completion-label");
+    if (bar) bar.style.width = percent + "%";
+    if (label) label.textContent = percent + "%";
+  } catch (err) {
+    console.error("Error loading profile completion:", err);
+  }
 }
 
 function showWelcome() {
