@@ -16,7 +16,8 @@ export const analyzeResume = async (resumeText) => {
       Do not include any markdown formatting like \`\`\`json or \`\`\`. Just return the raw JSON string.
       
       Extract the following fields:
-      - "name": The student's full name. If not found, return an empty string.
+      - "firstName": The student's First Name. If not found, return an empty string.
+      - "lastName": The student's Last Name or Surname. If not found, return an empty string.
       - "roll": The student's college Roll Number, Student ID, Enrollment Number, Alphanumeric ID, or Registration Number (e.g., 24CSB0B36, 22-CSE-102). Actively search the entire resume for any unique alphanumeric student identifier, enrollment code, or college registration ID. If not found, return an empty string.
       - "college": The student's college or university. If not found, return an empty string.
       - "branch": The student's degree, major, or branch (e.g., Computer Science, Mechanical). If not found, return an empty string.

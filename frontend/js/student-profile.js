@@ -24,8 +24,8 @@ const { token, user } = session;
 // ============================
 // PROFILE ELEMENTS
 // ============================
-const fullNameInput = document.getElementById("fullName");
-const rollInput = document.getElementById("rollNumber");
+const firstNameInput = document.getElementById("firstName");
+const lastNameInput = document.getElementById("lastName");
 const branchSelect = document.getElementById("branch");
 const cgpaInput = document.getElementById("cgpa");
 
@@ -61,8 +61,8 @@ function updateCompletion() {
     const isCgpaValid = cgpaVal > 0;
 
     const filled = [
-        fullNameInput.value.trim(),
-        rollInput.value.trim(),
+        firstNameInput.value.trim(),
+        lastNameInput.value.trim(),
         isBranchValid ? branchSelect.value : "",
         isCgpaValid ? cgpaInput.value : "",
         skills.length > 0,
@@ -120,8 +120,8 @@ resumeInput?.addEventListener("change", async (e) => {
     const dropArea = document.getElementById("resumeDropArea");
     
     // Clear previous details immediately to provide instant visual feedback
-    fullNameInput.value = "";
-    rollInput.value = "";
+    firstNameInput.value = "";
+    lastNameInput.value = "";
     cgpaInput.value = "";
     branchSelect.value = "";
     skills = [];
@@ -158,9 +158,12 @@ resumeInput?.addEventListener("change", async (e) => {
         const data = await res.json();
         const profile = data.student;
 
-        // Auto-fill forms based on AI extraction
-        if (profile.name) fullNameInput.value = profile.name;
-        if (profile.roll) rollInput.value = profile.roll;
+        // Auto-fill forms based on AI extraction (splitting full name into first and last name)
+        if (profile.name) {
+            const nameParts = profile.name.trim().split(/\s+/);
+            firstNameInput.value = nameParts[0] || "";
+            lastNameInput.value = nameParts.slice(1).join(" ") || "";
+        }
         if (profile.cgpa) cgpaInput.value = profile.cgpa;
 
         if (profile.branch) {
@@ -229,8 +232,9 @@ async function loadProfile() {
         if (!res.ok) throw new Error("Failed to fetch profile");
         const profile = await res.json();
 
-        fullNameInput.value = profile.name || "";
-        rollInput.value = profile.roll || "";
+        const nameParts = (profile.name || "").trim().split(/\s+/);
+        firstNameInput.value = nameParts[0] || "";
+        lastNameInput.value = nameParts.slice(1).join(" ") || "";
         cgpaInput.value = profile.cgpa || "";
 
         Array.from(branchSelect.options).forEach(o => {
@@ -264,8 +268,8 @@ async function loadProfile() {
 // ============================
 saveBtn?.addEventListener("click", async () => {
     const payload = {
-        name: fullNameInput.value.trim(),
-        roll: rollInput.value.trim(),
+        name: `${firstNameInput.value.trim()} ${lastNameInput.value.trim()}`.trim(),
+        roll: "",
         branch: branchSelect.value,
         cgpa: parseFloat(cgpaInput.value) || 0,
         college: "GH Raisoni",
@@ -356,8 +360,8 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProfile();
 
     // Attach dynamic input listeners to update profile completion in real-time
-    fullNameInput?.addEventListener("input", updateCompletion);
-    rollInput?.addEventListener("input", updateCompletion);
+    firstNameInput?.addEventListener("input", updateCompletion);
+    lastNameInput?.addEventListener("input", updateCompletion);
     branchSelect?.addEventListener("change", updateCompletion);
     cgpaInput?.addEventListener("input", updateCompletion);
 });

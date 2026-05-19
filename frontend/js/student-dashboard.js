@@ -37,9 +37,13 @@ async function loadProfileCompletion() {
                            profile.branch.trim().toLowerCase() !== "select branch" && 
                            profile.branch.trim().toLowerCase() !== "choose your branch";
 
+    const nameParts = (profile.name || "").trim().split(/\s+/);
+    const hasFirstName = nameParts[0] && nameParts[0].trim() !== "";
+    const hasLastName = nameParts[1] && nameParts[1].trim() !== "";
+
     const filled = [
-      profile.name ? profile.name.trim() : "",
-      profile.roll ? profile.roll.trim() : "",
+      hasFirstName ? "true" : "",
+      hasLastName ? "true" : "",
       isBranchFilled ? profile.branch.trim() : "",
       profile.cgpa && profile.cgpa > 0 ? "true" : "",
       profile.skills && profile.skills.length > 0 ? "true" : "",

@@ -174,7 +174,9 @@ export const uploadResume = async (req, res) => {
     }
 
     // Auto-Onboarding
-    if (aiResult.name) student.name = aiResult.name;
+    if (aiResult.firstName || aiResult.lastName) {
+      student.name = `${aiResult.firstName || ""} ${aiResult.lastName || ""}`.trim();
+    }
     if (aiResult.roll) student.roll = aiResult.roll;
     if (aiResult.college) student.college = aiResult.college;
     if (aiResult.branch) student.branch = aiResult.branch;
@@ -196,7 +198,11 @@ export const uploadResume = async (req, res) => {
 
     res.status(200).json({
       message: "Resume parsed and profile updated successfully via AI",
-      student
+      student: {
+        ...student.toObject(),
+        firstName: aiResult.firstName || "",
+        lastName: aiResult.lastName || ""
+      }
     });
 
   } catch (err) {
