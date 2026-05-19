@@ -31,10 +31,26 @@ export const analyzeResume = async (resumeText) => {
       """
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-    });
+    let response;
+    let retries = 3;
+    let delay = 1500;
+
+    for (let i = 0; i < retries; i++) {
+      try {
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+        });
+        break; // Success, break the retry loop
+      } catch (err) {
+        console.warn(`⚠️ Gemini API Attempt ${i + 1} failed:`, err.message || err);
+        if (i === retries - 1) {
+          throw err; // Re-throw the error if it was the final attempt
+        }
+        // Wait with exponential backoff before next attempt
+        await new Promise(res => setTimeout(res, delay * (i + 1)));
+      }
+    }
     
     let textOutput = response.text;
     
