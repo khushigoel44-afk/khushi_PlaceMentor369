@@ -299,7 +299,58 @@ saveBtn?.addEventListener("click", async () => {
 });
 
 // ============================
-// INIT
+// RESET PROFILE LOGIC
+// ============================
+const resetProfileBtn = document.getElementById("resetProfileBtn");
+resetProfileBtn?.addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to completely clear and reset all your profile details and resume?")) return;
+
+    resetProfileBtn.disabled = true;
+    resetProfileBtn.innerText = "Resetting...";
+
+    try {
+        const res = await fetch(`${API_BASE}/profile`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: "",
+                roll: "",
+                branch: "",
+                cgpa: 0,
+                college: "",
+                skills: [],
+                resume: ""
+            })
+        });
+
+        if (!res.ok) throw new Error("Reset failed");
+
+        // Clear UI inputs
+        fullNameInput.value = "";
+        rollInput.value = "";
+        cgpaInput.value = "";
+        branchSelect.value = "";
+        skills = [];
+        renderSkills();
+
+        // Clear Resume UI
+        resumeBase64 = null;
+        resumeInput.value = "";
+        resumeActions.classList.add("hidden");
+        updateCompletion();
+
+        showToast("🧹 Profile and Resume reset successfully!", "success");
+    } catch (err) {
+        console.error(err);
+        showToast("❌ Reset failed", "error");
+    } finally {
+        resetProfileBtn.disabled = false;
+        resetProfileBtn.innerText = "Reset Profile Data";
+    }
+});
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
     loadProfile();
