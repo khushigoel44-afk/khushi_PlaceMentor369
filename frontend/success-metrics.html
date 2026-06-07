@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+  <div class="container nav" style="position: relative;">
+    <div class="logo">
+      <i class="fa-solid fa-arrow-up-right-dots"></i> 
+      <span>PlacementorAI</span>
+    </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">
+  <i class="fa-solid fa-moon"></i>
+</button>
+    <button class="menu-toggle" id="mobile-menu-btn" aria-label="Toggle Navigation Menu">
+      <i class="fa-solid fa-bars" id="menu-icon"></i>
+    </button>
+
+    <nav class="nav-menu" id="nav-links-target">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contact</a>
+      <a href="register.html">Sign Up</a>
+      <a href="login.html" class="login">Login</a>
+      <a href="register.html" class="btn primary" style="color: #ffffff !important;">
+        Get Started
+        <i class="fa-solid fa-arrow-up-right-from-square" style="color: #ffffff !important;"></i>
+      </a>    
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="metrics-hero">
+    <div class="container">
+        <span class="analytics-badge">
+            <i class="fa-solid fa-chart-line"></i>
+            Live Placement Analytics
+        </span>
+
+        <h1>Placement Success Center</h1>
+
+        <p>
+            Real-time insights into placements, recruiters,
+            hiring trends and student success.
+        </p>
+    </div>
+</section>
+
+<section class="metrics-grid container">
+
+    <div class="metric-card">
+        <i class="fa-solid fa-user-graduate"></i>
+        <h2>3000+</h2>
+        <p>Students Placed</p>
+    </div>
+
+    <div class="metric-card">
+        <i class="fa-solid fa-building"></i>
+        <h2>250+</h2>
+        <p>Partner Companies</p>
+    </div>
+
+    <div class="metric-card">
+        <i class="fa-solid fa-briefcase"></i>
+        <h2>1200+</h2>
+        <p>Jobs Posted</p>
+    </div>
+
+    <div class="metric-card">
+        <i class="fa-solid fa-chart-simple"></i>
+        <h2>85%</h2>
+        <p>Placement Rate</p>
+    </div>
+
+</section>
+
+<section class="ai-insights container">
+
+    <h2>
+        <i class="fa-solid fa-brain"></i>
+        AI Placement Insights
+    </h2>
+
+    <div class="insight-card">
+        CSE placements increased by 18% this semester.
+        React, Node.js and Python remain the most
+        in-demand skills among recruiters.
+    </div>
+
+</section>
+
+</main>
+
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h3>PlacementorAI</h3>
+        <p>Your intelligent companion for career growth and recruitment management. Streamlining the path from campus to corporate.</p>
+        
+          <div class="footer-social">
+  <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+
+  <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-github"></i>
+  </a>
+
+  <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+    <i class="fa-brands fa-x-twitter"></i>
+  </a>
+</div>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="index.html">Home</a>
+        <a href="About.html">About Us</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div>
+        <h4>Resources</h4>
+        <a href="javascript:void(0)" onclick="openPortal('faq')">FAQ</a>
+        <a href="javascript:void(0)" onclick="openPortal('privacy')">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="openPortal('terms')">Terms of Service</a>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <a href="login.html">Login</a>
+        <a href="register.html">Sign Up</a>
+        <a href="register.html">Recruiter Portal</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">&copy; 2026 PlacementorAI. All rights reserved.</p>
+      <div style="display: flex; gap: 20px;">
+        <a href="javascript:void(0)" onclick="openPortal('privacy')">Privacy</a>
+        <a href="javascript:void(0)" onclick="openPortal('terms')">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
