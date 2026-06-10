@@ -234,7 +234,7 @@ export const deleteJob = async (req, res) => {
   try {
     const job = await Job.findOne({
       _id: req.params.id,
-      recruiter: req.user._id,
+      recruiter: req.user.id,
     });
     if (!job) return res.status(404).json({ message: "Job not found" });
 
