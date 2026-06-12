@@ -38,6 +38,7 @@ const resumeActions = document.getElementById("resumeActions");
 const resumeFileName = document.getElementById("resumeFileName");
 const viewPdfBtn = document.getElementById("viewPdfBtn");
 const removeResumeBtn = document.getElementById("removeResumeBtn");
+const resumeError = document.getElementById("resumeError");
 
 const saveBtn = document.getElementById("saveBtn");
 const completionBar = document.getElementById("completionBar");
@@ -109,131 +110,49 @@ window.removeSkill = function (i) {
     skills.splice(i, 1);
     renderSkills();
 }
+function showResumeError(message) {
+    resumeError.textContent = message;
+    resumeError.classList.remove("hidden");
+}
+
+function clearResumeError() {
+    resumeError.textContent = "";
+    resumeError.classList.add("hidden");
+}
 
 // ============================
 // RESUME LOGIC
 // ============================
-resumeInput?.addEventListener("change", async (e) => {
-    if (isProcessingResume) {
-        showToast("⚠️ A resume is already being parsed! Please wait.", "warning");
+resumeInput?.addEventListener("change", (e) => {
+    clearResumeError();
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+        showResumeError("Only PDF resumes are allowed.");
+        resumeInput.value = "";
         return;
     }
 
-    const file = e.target.files[0];
-    if (!file || file.type !== "application/pdf") return showToast("Only PDFs allowed!", "error");
-    if (file.size > 2 * 1024 * 1024) return showToast("Max 2MB", "error");
+    const MAX_SIZE = 2 * 1024 * 1024;
 
-    isProcessingResume = true;
-    if (saveBtn) saveBtn.disabled = true;
-    const resetProfileBtn = document.getElementById("resetProfileBtn");
-    if (resetProfileBtn) resetProfileBtn.disabled = true;
-
-    const dropArea = document.getElementById("resumeDropArea");
-    
-    // Clear previous details immediately to provide instant visual feedback
-    firstNameInput.value = "";
-    lastNameInput.value = "";
-    cgpaInput.value = "";
-    branchSelect.value = "";
-    skills = [];
-    renderSkills(); // This automatically resets progress bar to baseline
-    
-    // Show AI parsing loading state via a non-destructive absolute overlay
-    const loadingOverlay = document.createElement("div");
-    loadingOverlay.id = "resumeLoadingOverlay";
-    loadingOverlay.className = "absolute inset-0 bg-white/95 rounded-xl flex flex-col items-center justify-center z-10 pointer-events-none";
-    loadingOverlay.innerHTML = `
-        <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-3 animate-spin"></i>
-        <p class="text-blue-600 font-bold">Assistant is reading your resume...</p>
-        <p class="text-xs text-gray-400 mt-1">AI will automatically fill your profile fields</p>
-    `;
-    dropArea.appendChild(loadingOverlay);
-
-    const formData = new FormData();
-    formData.append("resume", file);
-
-    try {
-        const res = await fetch(`${API_BASE}/upload-resume`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            body: formData
-        });
-
-        if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.message || "Failed to process resume");
-        }
-
-        const data = await res.json();
-        
-        // Handle Phase 3 Background Queue Response
-        if (data.processing) {
-            showToast("⏳ " + data.message, "success");
-            // Load PDF as base64 for local viewing immediately
-            const reader = new FileReader();
-            reader.onload = () => {
-                resumeBase64 = reader.result;
-                showResumeUI(file.name);
-                updateCompletion();
-            };
-            reader.readAsDataURL(file);
-            
-            // Poll for profile updates after 5 seconds
-            setTimeout(() => {
-                loadProfile();
-            }, 5000);
-            return;
-        }
-
-        const profile = data.student;
-
-        // Auto-fill forms based on AI extraction (splitting full name into first and last name)
-        if (profile.name) {
-            const nameParts = profile.name.trim().split(/\s+/);
-            firstNameInput.value = nameParts[0] || "";
-            lastNameInput.value = nameParts.slice(1).join(" ") || "";
-        }
-        if (profile.cgpa) cgpaInput.value = profile.cgpa;
-
-        if (profile.branch) {
-            Array.from(branchSelect.options).forEach(o => {
-                const dbBranch = (profile.branch || "").trim().toLowerCase();
-                const optVal = (o.value || "").trim().toLowerCase();
-                const optText = (o.text || "").trim().toLowerCase();
-                
-                if (dbBranch === optVal || dbBranch === optText || 
-                    (dbBranch && (dbBranch.includes(optText) || optText.includes(dbBranch)))) {
-                    o.selected = true;
-                }
-            });
-        }
-
-        // Auto-fill skills
-        skills = (profile.skills || []).map(s => ({ name: s, level: "Intermediate" }));
-        renderSkills();
-
-        // Load PDF as base64 for local viewing
-        const reader = new FileReader();
-        reader.onload = () => {
-            resumeBase64 = reader.result;
-            showResumeUI(file.name);
-            updateCompletion();
-        };
-        reader.readAsDataURL(file);
-
-        showToast("🎯 AI successfully parsed your resume and auto-populated details!", "success");
-
-    } catch (err) {
-        console.error("AI Parser Error:", err);
-        showToast("❌ AI parsing failed: " + err.message, "error");
-    } finally {
-        document.getElementById("resumeLoadingOverlay")?.remove();
-        isProcessingResume = false;
-        if (saveBtn) saveBtn.disabled = false;
-        if (resetProfileBtn) resetProfileBtn.disabled = false;
+    if (file.size > MAX_SIZE) {
+        showResumeError("Resume size must be under 2MB.");
+        resumeInput.value = "";
+        return;
     }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        resumeBase64 = reader.result;
+        showResumeUI(file.name);
+        updateCompletion();
+    };
+
+    reader.readAsDataURL(file);
 });
 
 function showResumeUI(name) {
@@ -252,6 +171,7 @@ removeResumeBtn?.addEventListener("click", () => {
     resumeBase64 = null;
     resumeInput.value = "";
     resumeActions.classList.add("hidden");
+    clearResumeError();
     updateCompletion();
 });
 
