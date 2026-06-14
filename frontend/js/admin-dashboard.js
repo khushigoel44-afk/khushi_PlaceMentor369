@@ -174,6 +174,8 @@ function logout() {
 /* =========================
    INITIALIZE
 ========================= */
+"use strict";
+
 document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
 });
