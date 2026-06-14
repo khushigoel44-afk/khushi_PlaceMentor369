@@ -203,6 +203,50 @@ Backend runs on:
 
 http://localhost:5000
 ```
+
+---
+## 🐳 Docker Deployment Setup
+
+This project is fully containerized using Docker and Docker Compose. It automatically spins up the Vanilla JS Frontend (served via Nginx), the Node.js Express Backend, and a persistent MongoDB database instances.
+
+### Prerequisites
+Make sure you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed on your operating system (Windows via WSL2, macOS, or Linux).
+
+### Setup and Installation
+
+1. **Clone the Repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd <repository-folder>
+   ```
+
+2. **Configure Environment Variables:**
+Copy the example environment file to the root workspace layout:
+
+   ```Bash
+   cp .env.example .env
+   ```
+(Note: The MONGO_URI variable within docker uses the container name mongodb://mongodb:27017/placementor to network internally).
+
+3. **Spin up the Containers:**
+Run the following command to build and launch the ecosystem in the background:
+
+   ```Bash
+   docker compose up --build -d
+   ```
+
+4. **Verify Application Access points:**
+
+    - Frontend Interface: Navigate to http://localhost:8080
+    - Backend Health Check: Navigate to http://localhost:5000
+    - Database Engine: Bound and listening on local port 27017
+
+5. **Stopping the Environment:**
+To safely shut down the containers while preserving your MongoDB volumes database data, run:
+
+   ```Bash
+   docker compose down
+   ```
 ---
 
 ## 👥 Contributors
