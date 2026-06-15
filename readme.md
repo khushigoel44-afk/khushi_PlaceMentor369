@@ -1,4 +1,4 @@
-﻿# 🎯 PlacementorAI – Full-Stack Placement Management System
+# 🎯 PlacementorAI – Full-Stack Placement Management System
 
 PlacementorAI is a role-based placement management platform designed to simplify campus recruitment workflows using a clean architecture and AI-guided assistance.  
 The system clearly separates **Students, Recruiters, and Admins** to ensure security, transparency, and real-world usability.
@@ -78,14 +78,7 @@ This strict separation avoids bugs, conflicts, and unauthorized actions.
 
 ---
 
-## 🧭 Navigation
-- [**File Instructions**](INSTRUCTIONS.md) - Detailed overview of the project structure and file principles.
-- [**Contributing**](Contributing.md) - Guidelines for open-source contributions.
-- [**Security Policy**](SECURITY.md) - Reporting vulnerabilities.
-
----
-
-## 🚀 Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 - HTML, CSS, JavaScript
@@ -179,6 +172,9 @@ frontend/
 ├── index.html                   # Landing page
 ├── login.html                   # Login page
 └── register.html                # Registration page
+```
+
+---
 
 ⚙️ Environment Variables
 
@@ -188,43 +184,19 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 PORT=5000
 
-
 .env and node_modules are included in .gitignore for security.
 
-▶️ Run the Project Locally
-# Install backend dependencies
+---
+
+# ▶️ Run the Project Locally
+## Install backend dependencies
 npm install
 
-# Start backend server
+## Start backend server
 npm run dev
-
 
 Backend runs on:
 
 http://localhost:5000
-```
+
 ---
-
-## 👥 Contributors
-
-Thanks to all the amazing people who contributed to this project ❤️
-
-<a href="https://github.com/NileshBagade734-ux/PlaceMentor369/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=NileshBagade734-ux/PlaceMentor369" />
-</a>
-
-
-## ⭐ Project Support
-
-<p align="center">
-  <a href="https://github.com/NileshBagade734-ux/PlaceMentor369/stargazers">
-    <img alt="Stars" src="https://img.shields.io/github/stars/NileshBagade734-ux/PlaceMentor369?style=social">
-  </a>
-
-  <a href="https://github.com/NileshBagade734-ux/PlaceMentor369/network/members">
-    <img alt="Forks" src="https://img.shields.io/github/forks/NileshBagade734-ux/PlaceMentor369?style=social">
-  </a>
-</p>
-## 🌐 Live Demo
-- **Live Site:** https://place-mentor369.vercel.app
-
