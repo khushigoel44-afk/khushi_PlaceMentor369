@@ -1,21 +1,27 @@
-# Stage 1: Build & Dependencies
+# Stage 1: Build
 FROM node:20-alpine AS builder
 WORKDIR /usr/src/app
+# Copy root package files
 COPY package*.json ./
-RUN npm ci
+COPY backend/package*.json ./backend/
+RUN npm install
+# Copy everything from root
 COPY . .
 
-# Stage 2: Production Runtime
+# Stage 2: Runtime
 FROM node:20-alpine
 WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm ci --only=production
+COPY --from=builder /usr/src/app/backend/package*.json ./
+RUN npm install --omit=dev
 
-# FIX: Changed 'RUN' to 'COPY' and '--from=base' to '--from=builder'
-COPY --from=builder /usr/src/app ./
+# Copy the backend code explicitly from the root
+COPY --from=builder /usr/src/app/backend ./
+# If your routes/utils/middlewares are at the root, copy them too:
+COPY --from=builder /usr/src/app/middlewares ./middlewares
+COPY --from=builder /usr/src/app/routes ./routes
+COPY --from=builder /usr/src/app/utils ./utils
+COPY --from=builder /usr/src/app/workers ./workers
 
 USER node
 EXPOSE 5000
-
-# FIX: Standard command to run a Node.js/Express backend
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
