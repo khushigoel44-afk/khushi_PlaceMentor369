@@ -12,6 +12,8 @@ export const createJob = async (req, res) => {
     console.log("REQ.BODY:", req.body);
 
     const recruiterId = req.user.id;
+    const existingJob = await Job.findOne({ title, company, recruiter: recruiterId, createdAt: { $gte: new Date(Date.now() - 5 * 60000) } });
+    if (existingJob) return res.status(400).json({ message: "Duplicate job posting detected. Please wait 5 minutes before posting the same job again." });
 
     if (!recruiterId)
       return res.status(400).json({ message: "Recruiter ID missing" });
@@ -22,6 +24,7 @@ export const createJob = async (req, res) => {
       description,
       cgpa,
       branch,
+      branches,
       skillsRequired,
       deadline,
     } = req.body;
@@ -29,17 +32,28 @@ export const createJob = async (req, res) => {
     if (!title || !company || !description || !deadline) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+    const normalizedCompany = company.trim().toLowerCase();
+
+const existingCompany = await Job.findOne({
+  company: { $regex: new RegExp(`^${normalizedCompany}$`, "i") }
+});
+
+if (existingCompany) {
+  return res.status(400).json({
+    message: "Company already exists"
+  });
+}
 
     const job = await Job.create({
       title,
-      company,
+      company: company.trim(),
       description,
       cgpa,
-      branch,
+      branch: branch || branches || [],
       skillsRequired,
       deadline: new Date(deadline),
       recruiter: recruiterId,
-      status: "approved",
+      status: "pending",
     });
 
     res.status(201).json({ success: true, job });
@@ -84,8 +98,11 @@ export const getAllRecruiterApplications = async (req, res) => {
 ====================================================== */
 export const updateApplicantStatus = async (req, res) => {
   try {
-    const { applicationId } = req.params;
-    const { status } = req.body;
+    const {applicationId, status} = req.body;
+
+    if (!applicationId || !status) {
+      return res.status(400).json({ message: "Application ID  and status are required" });
+    }
 
     const application = await Application.findById(applicationId)
       .populate("student", "name email")
@@ -99,7 +116,7 @@ export const updateApplicantStatus = async (req, res) => {
     await application.save();
 
     if (status === "shortlisted" || status === "rejected") {
-      sendStatusUpdateEmail(
+       await sendStatusUpdateEmail(
         application.student.email,
         application.student.name,
         application.job.title,
@@ -125,6 +142,8 @@ export const updateApplicantStatus = async (req, res) => {
 export const getRecruiterDashboardStats = async (req, res) => {
   try {
     const recruiterId = req.user.id;
+    const existingJob = await Job.findOne({ title, company, recruiter: recruiterId, createdAt: { $gte: new Date(Date.now() - 5 * 60000) } });
+    if (existingJob) return res.status(400).json({ message: "Duplicate job posting detected. Please wait 5 minutes before posting the same job again." });
 
     const jobs = await Job.find({ recruiter: recruiterId }).select("_id");
     const jobIds = jobs.map((j) => j._id);
@@ -233,7 +252,7 @@ export const deleteJob = async (req, res) => {
   try {
     const job = await Job.findOne({
       _id: req.params.id,
-      recruiter: req.user._id,
+      recruiter: req.user.id,
     });
     if (!job) return res.status(404).json({ message: "Job not found" });
 
