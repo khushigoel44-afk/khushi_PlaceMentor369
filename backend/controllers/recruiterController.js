@@ -12,6 +12,8 @@ export const createJob = async (req, res) => {
     console.log("REQ.BODY:", req.body);
 
     const recruiterId = req.user.id;
+    const existingJob = await Job.findOne({ title, company, recruiter: recruiterId, createdAt: { $gte: new Date(Date.now() - 5 * 60000) } });
+    if (existingJob) return res.status(400).json({ message: "Duplicate job posting detected. Please wait 5 minutes before posting the same job again." });
 
     if (!recruiterId)
       return res.status(400).json({ message: "Recruiter ID missing" });
@@ -130,6 +132,8 @@ export const updateApplicantStatus = async (req, res) => {
 export const getRecruiterDashboardStats = async (req, res) => {
   try {
     const recruiterId = req.user.id;
+    const existingJob = await Job.findOne({ title, company, recruiter: recruiterId, createdAt: { $gte: new Date(Date.now() - 5 * 60000) } });
+    if (existingJob) return res.status(400).json({ message: "Duplicate job posting detected. Please wait 5 minutes before posting the same job again." });
 
     const jobs = await Job.find({ recruiter: recruiterId }).select("_id");
     const jobIds = jobs.map((j) => j._id);
